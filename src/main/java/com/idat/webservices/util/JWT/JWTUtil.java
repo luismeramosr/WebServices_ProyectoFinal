@@ -12,9 +12,9 @@ import io.jsonwebtoken.SignatureAlgorithm;
 @Component
 public class JWTUtil {
      // key necesaria para la encriptacion
-     private static final String KEY = "1d4tpr0y3ct";
+     private static final String KEY = "@1m4c3n_202105";
 
-     public String generaToken(UserDetails userDetails) {
+     public String generateToken(UserDetails userDetails) {
           /*
            * subject : es el usuario issuedat: dia de creacion expiration: dia de
            * expiracion ejem: 10 horas logueo con algoritmo de encriptacion y la key

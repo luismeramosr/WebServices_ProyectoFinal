@@ -7,7 +7,9 @@ import com.idat.webservices.persistence.models.User;
 import com.idat.webservices.persistence.repositories.UserRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
+@Service
 public class UserService implements IService<User> {
 
 	@Autowired
@@ -20,14 +22,12 @@ public class UserService implements IService<User> {
 
 	@Override
 	public Optional<User> findById(int id) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public Optional<User> findById(String id) {
-		// TODO Auto-generated method stub
-		return null;
+		return repository.findById(id);
 	}
 
 	@Override
@@ -45,7 +45,10 @@ public class UserService implements IService<User> {
 	@Override
 	public void delete(User entity) {
 		// TODO Auto-generated method stub
-		
+	}
+
+	public Optional<User> findByUsername(String username) {
+		return repository.findByUsername(username);
 	}
 	
 }

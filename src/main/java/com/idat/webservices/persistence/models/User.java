@@ -20,7 +20,7 @@ import lombok.NoArgsConstructor;
 public class User {
 
   @Id
-  @Column(name = "id", length = 25)
+  @Column(name = "id", length = 15)
   private String id;
 
   @Column(name = "firstName", length = 70)

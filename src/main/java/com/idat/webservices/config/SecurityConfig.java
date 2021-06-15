@@ -21,7 +21,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
      // datos de los usuarios
      @Autowired
-     private UserDetailsServiceOverride idatUserDetailsService;
+     private UserDetailsServiceOverride userDetailsServiceOverride;
 
      // nuestro filtro modificado para que use JWT
 
@@ -31,7 +31,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
      // le indicamos que usara nuestra configuracion de autenticacion
      @Override
      protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-          auth.userDetailsService(idatUserDetailsService);
+          auth.userDetailsService(userDetailsServiceOverride);
      }
 
      // configuracion de http
