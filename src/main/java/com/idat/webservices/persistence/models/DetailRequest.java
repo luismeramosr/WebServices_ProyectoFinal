@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 @Entity
-@Table(name = "requests")
+@Table(name = "detailsrequests")
 @Data
 @ToString
 @AllArgsConstructor
