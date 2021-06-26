@@ -4,8 +4,10 @@ import java.util.Optional;
 
 import com.idat.webservices.persistence.models.User;
 
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
-public interface UserRepository extends CrudRepository<User, String> {
+@Repository
+public interface UserRepository extends JpaRepository<User, String> {
 	Optional<User> findByUsername(String username);
 }

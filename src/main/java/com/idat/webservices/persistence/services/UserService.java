@@ -32,19 +32,17 @@ public class UserService implements IService<User> {
 
 	@Override
 	public Optional<User> save(User entity) {
-		// TODO Auto-generated method stub
-		return null;
+		return Optional.of(repository.save(entity));
 	}
 
 	@Override
 	public Optional<User> update(User entity) {
-		// TODO Auto-generated method stub
-		return null;
+		return Optional.of(repository.save(entity));
 	}
 
 	@Override
 	public void delete(User entity) {
-		// TODO Auto-generated method stub
+		repository.delete(entity);
 	}
 
 	public Optional<User> findByUsername(String username) {

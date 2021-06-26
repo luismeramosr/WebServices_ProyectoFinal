@@ -1,12 +1,15 @@
 package com.idat.webservices.persistence.models;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
@@ -32,9 +35,7 @@ public class Provider {
 	
 	@Column(name = "phone", length = 9)
 	private int phone;
-	
-	@OneToMany(mappedBy = "provider", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-	private List<Product> products;
-	
 
+	@OneToMany(mappedBy = "provider", cascade = {CascadeType.ALL})
+	private Set<Product> products = new HashSet<>();
 }

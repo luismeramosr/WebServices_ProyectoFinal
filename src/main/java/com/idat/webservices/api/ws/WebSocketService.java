@@ -35,7 +35,12 @@ public class WebSocketService {
 	}
 
 	public void onMessage(WebSocketSession session, TextMessage message) {
-		// TODO: Receive Stock update message and respond accordingly
+		try {
+			broadcastStock(message.getPayload());
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 }

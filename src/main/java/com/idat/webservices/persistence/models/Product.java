@@ -1,6 +1,8 @@
 package com.idat.webservices.persistence.models;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -8,6 +10,7 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
@@ -46,15 +49,11 @@ public class Product {
 	
 	@Column(name = "stock_min", length = 10)
 	private int stock_min;
-	
-	@ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name = "provider_id")
+
+	@ManyToOne
 	private Provider provider;
-
-
-	@OneToOne(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-	private List<DetailRequest> detailRequest;
 	
-	
+	@ManyToMany(mappedBy = "requestedProducts")
+	private Set<Request> requests = new HashSet<>();
 
 }

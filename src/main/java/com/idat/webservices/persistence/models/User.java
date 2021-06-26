@@ -44,6 +44,9 @@ public class User {
   @Column(name = "password", length = 64)
   private String password;
 
+  @Column(name = "active")
+  private boolean active;
+
   @Column(name = "idRole", length = 15)
   private int idRole;
 
