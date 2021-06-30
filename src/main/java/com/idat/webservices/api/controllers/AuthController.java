@@ -12,6 +12,7 @@ import com.idat.webservices.api.ws.WebSocketService;
 import com.idat.webservices.domain.dto.LoginRequest;
 import com.idat.webservices.domain.dto.LoginResponse;
 import com.idat.webservices.domain.dto.Response;
+import com.idat.webservices.domain.exceptions.AuthException;
 import com.idat.webservices.domain.services.AuthService;
 import com.idat.webservices.domain.services.UserDetailsServiceOverride;
 import com.idat.webservices.persistence.models.User;
@@ -36,6 +37,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.HttpClientErrorException.BadRequest;
 
 @RestController
 @RequestMapping("auth")
@@ -58,16 +60,24 @@ public class AuthController {
 				return User;
 			}).orElse(null);
 
+			if (user == null)
+				throw new AuthException("Credenciales incorrectas!");
+
+			if (!user.isInSchedule())
+				throw new AuthException("Usuario fuera del horario");
+
 			if (user.isActive()) {
-				LoginResponse response = authService.authenticate(user, request.getPassword());			
-				requestCount.put(user.getUsername(), 1);
-				return new ResponseEntity<>(new Response<LoginResponse>(response), HttpStatus.OK);
+				LoginResponse response = authService.authenticate(user, request.getPassword());
+				requestCount.put(user.getUsername(), 0);
+				return new ResponseEntity<>(new Response<>(response), HttpStatus.OK);
 			} else {
-				throw new BadCredentialsException("User is disabled");
+				throw new AuthException("Usuario bloqueado");
 			}
 		} catch (BadCredentialsException err) {
 			manageBans(request.getUsername());
-			return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+			return new ResponseEntity<>(new Response<>(null, "Credenciales incorrectas!"), HttpStatus.OK);
+		} catch (AuthException err) {
+			return new ResponseEntity<>(new Response<>(null, err.getMessage()), HttpStatus.OK);
 		}
 	}
 
@@ -77,8 +87,8 @@ public class AuthController {
 			badRequests++;
 			requestCount.put(username, badRequests);
 			if (badRequests >= 3) {
-				banUser(username);		
-			} 						
+				banUser(username);
+			}
 		} else {
 			requestCount.put(username, 1);
 		}
@@ -103,7 +113,7 @@ public class AuthController {
 				userService.update(user);
 			}, 10);
 		}
-		Console.log("User has been disabled.");
+		Console.log(String.format("User \"%s\", has been disabled.", user.getUsername()));
 	}
 
 }

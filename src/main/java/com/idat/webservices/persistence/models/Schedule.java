@@ -1,5 +1,6 @@
 package com.idat.webservices.persistence.models;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
@@ -29,7 +30,7 @@ public class Schedule {
 	@Column(name = "start")
 	private LocalTime start;
 
-	@Column(name = "end")
-	private LocalTime end;
+	@Column(name = "stop")
+	private LocalTime stop; 
 
 }

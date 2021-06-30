@@ -13,7 +13,7 @@ function setConnected(connected) {
 }
 
 function connect() {
-	ws = new WebSocket('ws://192.168.1.100:8080/api/ws');
+	ws = new WebSocket('ws://almacen.luismeramosr.ml/api/ws');
 	ws.onmessage = function(data){
 		showGreeting(data.data);
 	}
