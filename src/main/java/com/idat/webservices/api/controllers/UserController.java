@@ -1,7 +1,9 @@
 package com.idat.webservices.api.controllers;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import com.idat.webservices.domain.dto.Response;
 import com.idat.webservices.persistence.models.User;
@@ -33,8 +35,9 @@ public class UserController {
 	@GetMapping("operator")
 	public ResponseEntity<Response<List<User>>> getAllOperators() {
 
-		List<User> operators = service.findAll().stream().filter(user -> user.getRole().getName().equals("Operario"))
-				.toList();
+		List<User> operators = service.findAll().stream()
+			.filter(user -> user.getRole().getName().equals("Operario"))
+			.collect(Collectors.toList());
 
 		return new ResponseEntity<>(new Response<>(operators), HttpStatus.OK);
 	}

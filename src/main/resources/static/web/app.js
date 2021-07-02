@@ -9,13 +9,14 @@ function setConnected(connected) {
     else {
         $("#conversation").hide();
     }
-    $("#greetings").html("");
+    $("#messages").html("");
 }
 
 function connect() {
 	ws = new WebSocket('ws://almacen.luismeramosr.ml/api/ws');
-	ws.onmessage = function(data){
-		showGreeting(data.data);
+	ws.onmessage = function(response){
+		console.log(response.data)
+		showMessages(JSON.parse(response.data));
 	}
 	 setConnected(true);
 }
@@ -28,13 +29,13 @@ function disconnect() {
     console.log("Disconnected");
 }
 
-function sendName() {
-	var data = JSON.stringify({'name': $("#name").val()})
-    ws.send(data);
+function sendMessage() {
+	var msg = JSON.stringify({"user": $("#name").val(), "message": $("#message").val()})
+    ws.send(msg);
 }
 
-function showGreeting(message) {
-    $("#greetings").append("<tr><td> " + message + "</td></tr>");
+function showMessages(msg) {
+	$("#messages").append(`<tr><td><strong>${msg.user}</strong>: ${msg.message}</td></tr>`);
 }
 
 $(function () {
@@ -43,6 +44,6 @@ $(function () {
     });
     $( "#connect" ).click(function() { connect(); });
     $( "#disconnect" ).click(function() { disconnect(); });
-    $( "#send" ).click(function() { sendName(); });
+    $( "#send" ).click(function() { sendMessage(); });
 });
 

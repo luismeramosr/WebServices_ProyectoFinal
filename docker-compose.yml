@@ -1,0 +1,11 @@
+version: '3.4'
+
+services:
+  webservicesproyectofinal:
+    image: webservicesproyectofinal
+    build:
+      #restart: always
+      context: .
+      dockerfile: ./Dockerfile
+    ports:
+      - 8080:8080
