@@ -4,7 +4,7 @@ services:
   webservicesproyectofinal:
     image: webservicesproyectofinal
     build:
-      #restart: always
+      restart: always
       context: .
       dockerfile: ./Dockerfile
     ports:
