@@ -39,6 +39,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.HttpClientErrorException.BadRequest;
 
+
 @RestController
 @RequestMapping("auth")
 public class AuthController {
@@ -48,6 +49,9 @@ public class AuthController {
 
 	@Autowired
 	private AuthService authService;
+
+	@Autowired
+	private Helpers helpers;
 
 	private Map<String, Integer> requestCount = new HashMap<>();
 
@@ -108,7 +112,7 @@ public class AuthController {
 			// este tiempo luego sera de 180 segundos o 3 minutos
 			user.setActive(false);
 			userService.update(user);
-			Helpers.setTimeout(() -> {
+			helpers.setTimeout(() -> {
 				user.setActive(true);
 				userService.update(user);
 			}, 10);

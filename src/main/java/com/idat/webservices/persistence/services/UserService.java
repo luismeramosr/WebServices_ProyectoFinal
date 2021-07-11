@@ -41,8 +41,8 @@ public class UserService implements IService<User> {
 	}
 
 	@Override
-	public void delete(User entity) {
-		repository.delete(entity);
+	public void delete(User user) {
+		repository.delete(user);
 	}
 
 	public Optional<User> findByUsername(String username) {
