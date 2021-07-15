@@ -56,9 +56,7 @@ public class UserController {
 	@GetMapping("{id}")
 	public ResponseEntity<Response<User>> getUserById(@PathVariable("id") String id) {
 
-		User user = service.findById(id).map(User -> {
-			return User;
-		}).orElse(null);
+		User user = service.findById(id).orElse(null);
 
 		if (user != null)
 			return new ResponseEntity<>(new Response<>(user), HttpStatus.OK);
@@ -76,9 +74,7 @@ public class UserController {
 		user.setUsername(generatedUsername);
 		user.setPassword(encryption.encryptPassword(generatedUsername));
 		user.setActive(true);
-		User u = service.save(user).map(User -> {
-			return User;
-		}).orElse(null);
+		User u = service.save(user).orElse(null);
 
 		if (u!=null)
 			return new ResponseEntity<>(new Response<>(u), HttpStatus.OK);
@@ -89,9 +85,7 @@ public class UserController {
 	@PutMapping
 	public ResponseEntity<Response<User>> updateUser(@RequestBody User user) {
 		user.setPassword(encryption.encryptPassword(user.getPassword()));
-		User u = service.update(user).map(User -> {
-			return User;
-		}).orElse(null);
+		User u = service.update(user).orElse(null);
 
 		if (u != null)
 			return new ResponseEntity<>(new Response<>(u), HttpStatus.OK);

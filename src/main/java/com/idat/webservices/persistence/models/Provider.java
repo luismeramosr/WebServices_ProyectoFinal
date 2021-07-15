@@ -13,13 +13,15 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 @Entity
-@Table(name = "providers")
+@Table(name = "provider")
 @Data
 @ToString
 @NoArgsConstructor
@@ -34,8 +36,9 @@ public class Provider {
 	private String name;
 	
 	@Column(name = "phone", length = 9)
-	private int phone;
+	private String phone;
 
+	@JsonIgnore		
 	@OneToMany(mappedBy = "provider", cascade = {CascadeType.ALL})
-	private Set<Product> products = new HashSet<>();
+	private Set<Item> products = new HashSet<>();
 }

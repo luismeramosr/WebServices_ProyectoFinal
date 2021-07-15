@@ -1,5 +1,7 @@
 package com.idat.webservices.util.JWT;
 
+import java.time.Instant;
+import java.time.LocalDate;
 import java.util.Date;
 
 import org.springframework.security.core.userdetails.UserDetails;
@@ -21,8 +23,9 @@ public class JWTUtil {
            * compact: convierte en string
            */
           Integer hours = 10; // 10 horas de validez
-          return Jwts.builder().setSubject(userDetails.getUsername()).setIssuedAt(new Date())
-                    .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * hours))
+		return Jwts.builder().setSubject(userDetails.getUsername())
+					.setIssuedAt(Date.from(Instant.now()))
+                    .setExpiration(Date.from(Instant.now().plusSeconds(3600 * hours)))
                     .signWith(SignatureAlgorithm.HS256, KEY).compact();
      }
 
@@ -38,7 +41,7 @@ public class JWTUtil {
 
      public boolean isTokenExpired(String token) {
           // verifica si la fecha de expiracion es antes del dia
-          return getClaims(token).getExpiration().before(new Date());
+          return getClaims(token).getExpiration().before(Date.from(Instant.now()));
      }
 
      public Claims getClaims(String token) {

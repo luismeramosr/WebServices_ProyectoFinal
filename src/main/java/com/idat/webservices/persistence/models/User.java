@@ -41,10 +41,10 @@ public class User {
 	private String lastName;
 
 	@Column(name = "dni", length = 8)
-	private int dni;
+	private String dni;
 
 	@Column(name = "phone", length = 9)
-	private int phone;
+	private String phone;
 
 	@Column(name = "email", length = 30)
 	private String email;
@@ -64,11 +64,11 @@ public class User {
 	@Column(name = "idSchedule")
 	private int idSchedule;
 
-	@OneToOne(cascade = { CascadeType.ALL })
+	@OneToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "idRole", insertable = false, updatable = false)
 	private Role role;
 
-	@OneToOne(cascade = { CascadeType.ALL })
+	@OneToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "idSchedule", insertable = false, updatable = false)
 	private Schedule schedule;
 

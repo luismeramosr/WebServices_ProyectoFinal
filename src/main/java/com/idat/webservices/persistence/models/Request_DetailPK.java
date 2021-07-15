@@ -15,10 +15,10 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class Request_DetailPK implements Serializable {
 	
-	@Column(name = "idRequest", length = 20)
-	private String idRequest;
+	@Column(name = "requestId", length = 20)
+	private int requestId;
 
-	@Column(name = "idProduct", length = 25)
-	private String idProduct;
+	@Column(name = "itemId", length = 25)
+	private int itemId;
 
 }

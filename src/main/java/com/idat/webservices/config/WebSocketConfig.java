@@ -13,10 +13,10 @@ import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry
 public class WebSocketConfig implements WebSocketConfigurer {
 
 	@Autowired
-	private WebSocketHandler wsHandler;
+	private WebSocketHandler handler;
 
 	@Override
 	public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
-		registry.addHandler(wsHandler, "/ws");
+		registry.addHandler(handler, "/ws");
 	}
 }

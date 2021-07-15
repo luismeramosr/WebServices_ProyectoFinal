@@ -7,8 +7,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.idat.webservices.api.ws.WebSocketHandler;
-import com.idat.webservices.api.ws.WebSocketService;
 import com.idat.webservices.domain.dto.LoginRequest;
 import com.idat.webservices.domain.dto.LoginResponse;
 import com.idat.webservices.domain.dto.Response;
@@ -60,9 +58,7 @@ public class AuthController {
 	public ResponseEntity<Response<LoginResponse>> login(@RequestBody LoginRequest request) {
 		try {
 			// Creamos el objeto user buscandolo por username
-			User user = userService.findByUsername(request.getUsername()).map(User -> {
-				return User;
-			}).orElse(null);
+			User user = userService.findByUsername(request.getUsername()).orElse(null);
 
 			if (user == null)
 				throw new AuthException("Credenciales incorrectas!");
@@ -100,9 +96,7 @@ public class AuthController {
 	}
 
 	private void banUser(String username) {
-		User user = userService.findByUsername(username).map(User -> {
-			return User;
-		}).orElse(null);
+		User user = userService.findByUsername(username).orElse(null);
 
 		if (user.getRole().getName().equals("Operario")) {
 			user.setActive(false);

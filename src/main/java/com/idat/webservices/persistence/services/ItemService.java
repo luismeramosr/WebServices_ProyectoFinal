@@ -3,45 +3,45 @@ package com.idat.webservices.persistence.services;
 import java.util.List;
 import java.util.Optional;
 
-import com.idat.webservices.persistence.models.Product;
-import com.idat.webservices.persistence.repositories.ProductRepository;
+import com.idat.webservices.persistence.models.Item;
+import com.idat.webservices.persistence.repositories.ItemRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class ProductService implements IService<Product> {
+public class ItemService implements IService<Item> {
 
     @Autowired
-    private ProductRepository repository;
+    private ItemRepository repository;
 
     @Override
-    public List<Product> findAll() {
-        return (List<Product>) repository.findAll();
+    public List<Item> findAll() {
+        return (List<Item>) repository.findAll();
     }
 
     @Override
-    public Optional<Product> findById(int id) {
+    public Optional<Item> findById(int id) {
         return null;
     }
 
     @Override
-    public Optional<Product> findById(String barcode) {
+    public Optional<Item> findById(String barcode) {
         return repository.findByBarcode(barcode);
     }
 
     @Override
-    public Optional<Product> save(Product entity) {
+    public Optional<Item> save(Item entity) {
         return Optional.of(repository.save(entity));
     }
 
     @Override
-    public Optional<Product> update(Product entity) {
+    public Optional<Item> update(Item entity) {
         return Optional.of(repository.save(entity));
     }
 
     @Override
-    public void delete(Product entity) {
+    public void delete(Item entity) {
         repository.delete(entity);
 
     }
