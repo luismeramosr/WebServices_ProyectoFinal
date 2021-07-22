@@ -1,4 +1,4 @@
-package com.idat.webservices.api.ws;
+package com.idat.webservices.websockets;
 
 import java.util.HashMap;
 import java.util.Map;

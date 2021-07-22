@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.idat.webservices.api.services.BanService;
 import com.idat.webservices.domain.dto.Response;
 import com.idat.webservices.persistence.models.User;
 import com.idat.webservices.persistence.services.UserService;
@@ -30,13 +31,16 @@ import org.springframework.web.bind.annotation.PostMapping;
 public class UserController {
 
 	@Autowired
-	UserService service;
+	private UserService service;
 
 	@Autowired
-	Encryption encryption;
+	private Encryption encryption;
 
 	@Autowired
-	Helpers helpers;
+	private Helpers helpers;
+
+	@Autowired
+	private BanService banService;
 
 	@GetMapping
 	public ResponseEntity<Response<List<User>>> getAllUsers() {
@@ -46,10 +50,8 @@ public class UserController {
 	@GetMapping("operator")
 	public ResponseEntity<Response<List<User>>> getAllOperators() {
 
-		List<User> operators = service.findAll().stream()
-			.filter(user -> user.getRole().getName().equals("Operario"))
-			.collect(Collectors.toList());
-
+		List<User> operators = service.findAll().stream().filter(user -> user.getRole().getName().equals("Operario"))
+				.collect(Collectors.toList());
 		return new ResponseEntity<>(new Response<>(operators), HttpStatus.OK);
 	}
 
@@ -66,17 +68,16 @@ public class UserController {
 
 	@PostMapping
 	public ResponseEntity<Response<User>> addUser(@RequestBody User user) {
-		Console.log(user.toString());
-		String generatedUsername = String.format("%s%s", 
-			user.getFirstName().substring(0, 2),
-			String.valueOf(user.getDni()).substring(0,2));
+		String generatedUsername = String.format("%s%s%s", user.getFirstName().substring(0, 3),
+				user.getLastName().substring(0, 3),
+				String.valueOf(user.getDni()).substring(user.getDni().length() - 3));
 		user.setId(helpers.generateId(service));
 		user.setUsername(generatedUsername);
 		user.setPassword(encryption.encryptPassword(generatedUsername));
 		user.setActive(true);
 		User u = service.save(user).orElse(null);
 
-		if (u!=null)
+		if (u != null)
 			return new ResponseEntity<>(new Response<>(u), HttpStatus.OK);
 		else
 			return new ResponseEntity<>(new Response<>(u, "No se pudo registrar"), HttpStatus.BAD_REQUEST);
@@ -84,13 +85,22 @@ public class UserController {
 
 	@PutMapping
 	public ResponseEntity<Response<User>> updateUser(@RequestBody User user) {
-		user.setPassword(encryption.encryptPassword(user.getPassword()));
-		User u = service.update(user).orElse(null);
+		Console.log(user.toString());
+		User newUser;
+		if (user.getPassword().equals("no-update")) {
+			User actualUser = service.findByUsername(user.getUsername()).orElse(null);
+			banService.unBanUser(actualUser);
+			user.setPassword(actualUser.getPassword());
+			newUser = service.update(user).orElse(null);
+		} else {
+			user.setPassword(encryption.encryptPassword(user.getPassword()));
+			newUser = service.update(user).orElse(null);
+		}
 
-		if (u != null)
-			return new ResponseEntity<>(new Response<>(u), HttpStatus.OK);
+		if (newUser != null)
+			return new ResponseEntity<>(new Response<>(newUser), HttpStatus.OK);
 		else
-			return new ResponseEntity<>(new Response<>(u, "No se pudo actualizar"), HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<>(new Response<>(newUser, "No se pudo actualizar"), HttpStatus.BAD_REQUEST);
 	}
 
 	@DeleteMapping("{id}")

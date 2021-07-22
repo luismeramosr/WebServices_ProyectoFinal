@@ -28,4 +28,8 @@ public class Helpers {
 		return lastId;
 	}
 
+	public void runInBackgroundThread(Runnable function) {
+		new Thread(function).start();
+	}
+
 }

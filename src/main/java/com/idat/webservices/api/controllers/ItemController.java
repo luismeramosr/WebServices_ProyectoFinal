@@ -4,14 +4,15 @@ import java.util.List;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import com.idat.webservices.api.ws.Channel;
-import com.idat.webservices.api.ws.WSMessage;
-import com.idat.webservices.api.ws.WSSubscriptionService;
-import com.idat.webservices.api.ws.WebSocketHandler;
 import com.idat.webservices.domain.dto.Response;
 import com.idat.webservices.persistence.models.Item;
 import com.idat.webservices.persistence.services.ItemService;
 import com.idat.webservices.util.Console;
+import com.idat.webservices.util.Helpers;
+import com.idat.webservices.websockets.Channel;
+import com.idat.webservices.websockets.WSMessage;
+import com.idat.webservices.websockets.WSSubscriptionService;
+import com.idat.webservices.websockets.WebSocketHandler;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -68,7 +69,7 @@ public class ItemController {
 		message.setBody(gson.fromJson(gson.toJson(item), JsonObject.class));
 		Channel publisher = ws.subService.getChannels().get(item.getBarcode());
 		if (publisher != null)
-			publisher.publish(message);
+			publisher.publish(message); 
 		if (newItem != null)
 			return new ResponseEntity<>(new Response<>(newItem), HttpStatus.OK);
 		else

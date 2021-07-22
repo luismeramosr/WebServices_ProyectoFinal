@@ -1,4 +1,4 @@
-package com.idat.webservices.api.ws;
+package com.idat.webservices.websockets;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;

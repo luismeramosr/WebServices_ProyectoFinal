@@ -55,7 +55,7 @@ public class Request {
 	@JoinTable(
 		name = "request_detail",
 		joinColumns = @JoinColumn(name = "requestId"),
-		inverseJoinColumns = @JoinColumn(name = "itemId")
+		inverseJoinColumns = @JoinColumn(name = "barcode")
 	)	
 	private Set<Item> requestedItems = new HashSet<>();
     

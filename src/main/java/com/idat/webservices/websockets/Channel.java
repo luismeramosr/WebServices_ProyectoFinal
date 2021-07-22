@@ -1,4 +1,4 @@
-package com.idat.webservices.api.ws;
+package com.idat.webservices.websockets;
 
 import java.io.EOFException;
 import java.io.IOException;
@@ -13,7 +13,9 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.idat.webservices.persistence.services.ItemService;
 import com.idat.webservices.util.Console;
+import com.idat.webservices.util.Helpers;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.TextMessage;
 
@@ -26,13 +28,9 @@ public class Channel {
 	@Getter
 	private Map<String, WebSocketClient> subs;
 	private Gson gson;
-	//private static Channel instance;
 
-	//public static Channel getInstance(String name) {
-	//	if (instance == null)
-	//		instance = new Channel(name);
-	//	return instance;
-	//}
+	@Autowired
+	Helpers helpers;
 
 	public Channel(String _name) {
 		name = _name;
@@ -46,14 +44,19 @@ public class Channel {
 		} else {
 			subs.put(sub.getSession().getId(), sub);
 		}
-		Console.log(subs.size());
-		Console.log(String.format("User has subscribed: %s", sub));
+		Console.log(
+			String.format("Users subscribed: %s",
+			subs.size())
+		);
 	}
 
 	public void unSubscribe(WebSocketClient sub) {
 		if (subs.containsValue(sub)) {
 			subs.remove(sub.getSession().getId());
-			Console.log("User unsubscribed: %s", sub);
+			Console.log(
+			String.format("Users subscribed: %s",
+			subs.size())
+		);
 		}
 	}
 
@@ -62,18 +65,12 @@ public class Channel {
 	}
 
 	public void publish(WSMessage msg) {
-
-		try {
-			TextMessage payload = new TextMessage(gson.toJson(msg, WSMessage.class));
-			Console.log(String.format("Payload: %s", payload.getPayload()));
-			for (WebSocketClient sub : subs.values()) {
-				if (sub != null && sub.getSession().isOpen()) {
-					sub.getSession().sendMessage(payload);
-				}
+		TextMessage payload = new TextMessage(gson.toJson(msg, WSMessage.class));
+		Console.log(String.format("Payload: %s", payload.getPayload()));
+		for (WebSocketClient sub : subs.values()) {
+			if (sub != null && sub.getSession().isOpen()) {
+				sub.update(payload);
 			}
-		} catch (IOException err) {
-			err.printStackTrace();
-		} 
+		}
 	}
-
 }

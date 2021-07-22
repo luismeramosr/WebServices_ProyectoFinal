@@ -1,4 +1,4 @@
-package com.idat.webservices.api.ws;
+package com.idat.webservices.websockets;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -79,7 +79,7 @@ public class WebSocketHandler extends TextWebSocketHandler {
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-		}, 1, 5, TimeUnit.SECONDS);
+		}, 2, 4, TimeUnit.SECONDS);
 	}
 
 	private void scheduleDiconnection(WebSocketClient client) {

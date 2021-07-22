@@ -1,4 +1,4 @@
-package com.idat.webservices.api.ws;
+package com.idat.webservices.websockets;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -40,11 +40,12 @@ public class WSMessageHandler {
 		msg = WSMessage.buildMessage("any");
 		endpoints.put("Pong", this::onPong);
 		endpoints.put("Item", this::subscribeToItem);
+		endpoints.put("unsubscribe-Item", this::unsubscribeFromItem);
 	}
 
 	public void handleMessage(String message, WebSocketClient _client) throws IOException {
 		client = _client;
-		Console.log(message);
+		//Console.log(message);
 		JsonObject jo = gson.fromJson(message, JsonObject.class);
 		msg.setId(jo.get("id").getAsString());
 		msg.setBody(jo.get("body").getAsJsonObject());
@@ -61,9 +62,32 @@ public class WSMessageHandler {
 		Channel channel = subService.getChannels().get(item.getBarcode());
 		if (channel != null) {
 			channel.subscribe(client);
+			Console.log(
+				String.format("User has subscribed to channel %s",
+				item.getBarcode())
+			);
 		} else {
 			subService.addChannel(item.getBarcode()).subscribe(client);
+			Console.log(
+				String.format("Channel created: %s", 
+				subService.getChannels().get(item.getBarcode()).getName())
+			);
+			Console.log(
+				String.format("User has subscribed to channel %s",
+				item.getBarcode())
+			);
 		}
-		Console.log(String.format("Channel created: %s", subService.getChannels().get(item.getBarcode()).getName()));
+	}
+
+	public void unsubscribeFromItem() {
+		Item item = gson.fromJson(msg.getBody(), Item.class);
+		Channel channel = subService.getChannels().get(item.getBarcode());
+		if (channel != null) {
+			channel.unSubscribe(client);
+			Console.log(
+				String.format("User has unsubscribed from channel %s",
+				item.getBarcode())
+			);
+		}
 	}
 }

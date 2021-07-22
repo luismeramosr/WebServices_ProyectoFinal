@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.idat.webservices.api.services.BanService;
 import com.idat.webservices.domain.dto.LoginRequest;
 import com.idat.webservices.domain.dto.LoginResponse;
 import com.idat.webservices.domain.dto.Response;
@@ -37,7 +38,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.HttpClientErrorException.BadRequest;
 
-
 @RestController
 @RequestMapping("auth")
 public class AuthController {
@@ -49,9 +49,7 @@ public class AuthController {
 	private AuthService authService;
 
 	@Autowired
-	private Helpers helpers;
-
-	private Map<String, Integer> requestCount = new HashMap<>();
+	private BanService banService;
 
 	@PostMapping("login")
 	@ResponseBody
@@ -68,50 +66,16 @@ public class AuthController {
 
 			if (user.isActive()) {
 				LoginResponse response = authService.authenticate(user, request.getPassword());
-				requestCount.put(user.getUsername(), 0);
 				return new ResponseEntity<>(new Response<>(response), HttpStatus.OK);
 			} else {
 				throw new AuthException("Usuario bloqueado");
 			}
 		} catch (BadCredentialsException err) {
-			manageBans(request.getUsername());
+			banService.manageBans(request.getUsername());
 			return new ResponseEntity<>(new Response<>(null, "Credenciales incorrectas!"), HttpStatus.OK);
 		} catch (AuthException err) {
 			return new ResponseEntity<>(new Response<>(null, err.getMessage()), HttpStatus.OK);
 		}
-	}
-
-	private void manageBans(String username) {
-		if (requestCount.get(username) != null) {
-			int badRequests = requestCount.get(username);
-			badRequests++;
-			requestCount.put(username, badRequests);
-			if (badRequests >= 3) {
-				banUser(username);
-			}
-		} else {
-			requestCount.put(username, 1);
-		}
-		Console.log(String.format("Bad requests: %s", requestCount.get(username)));
-	}
-
-	private void banUser(String username) {
-		User user = userService.findByUsername(username).orElse(null);
-
-		if (user.getRole().getName().equals("Operario")) {
-			user.setActive(false);
-			userService.update(user);
-		} else if (user.getRole().getName().equals("Administrador")) {
-			// Desactivamos al usuario y lo reactivamos en 10 segundos
-			// este tiempo luego sera de 180 segundos o 3 minutos
-			user.setActive(false);
-			userService.update(user);
-			helpers.setTimeout(() -> {
-				user.setActive(true);
-				userService.update(user);
-			}, 10);
-		}
-		Console.log(String.format("User \"%s\", has been disabled.", user.getUsername()));
 	}
 
 }

@@ -1,6 +1,6 @@
 package com.idat.webservices.config;
 
-import com.idat.webservices.api.ws.WebSocketHandler;
+import com.idat.webservices.websockets.WebSocketHandler;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
